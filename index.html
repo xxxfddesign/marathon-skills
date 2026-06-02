@@ -545,28 +545,71 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* BMI arc canvas */
-.bmi-arc-container {
-  position: relative; width: 280px; height: 280px;
-  margin: 0 auto;
+/* BMI meter card */
+.bmi-meter {
+  border-radius: 18px;
+  padding: 24px 28px;
+  position: relative; overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--card);
+  transition: border-color 0.4s, background 0.4s;
 }
-#bmi-arc-svg {
-  position: absolute; inset: 0;
+.bmi-meter-bg {
+  position: absolute; inset: 0; opacity: 0.06;
+  background: radial-gradient(circle at 30% 50%, var(--primary), transparent 70%);
+  pointer-events: none; transition: background 0.4s;
 }
-.bmi-arc-center {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+.bmi-meter-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 16px;
 }
-.bmi-arc-value {
+.bmi-meter-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  color: var(--text-sec); text-transform: uppercase;
+}
+.bmi-meter-cat-badge {
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+  transition: background 0.4s, color 0.4s;
+}
+.bmi-meter-value {
   font-family: 'Rajdhani', sans-serif;
-  font-size: 52px; font-weight: 700;
-  line-height: 1; transition: color 0.4s;
+  font-size: 72px; font-weight: 700; line-height: 1;
+  transition: color 0.4s;
+  text-shadow: 0 0 40px currentColor;
 }
-.bmi-arc-category {
-  font-size: 14px; font-weight: 600;
-  transition: color 0.4s; margin-top: 4px;
+.bmi-meter-unit {
+  font-size: 16px; font-weight: 400;
+  color: var(--text-sec); margin-left: 4px;
+  font-family: 'Inter', sans-serif;
 }
-.bmi-arc-cat-icon { font-size: 18px; }
+/* Progress bar with 4 zones */
+.bmi-progress-wrap { margin-top: 20px; }
+.bmi-progress-track {
+  height: 8px; border-radius: 4px; overflow: hidden;
+  background: linear-gradient(to right,
+    #FFC400 0%, #FFC400 30%,
+    #00E5A8 30%, #00E5A8 55%,
+    #FF8C00 55%, #FF8C00 75%,
+    #FF4860 75%, #FF4860 100%);
+  position: relative;
+}
+.bmi-progress-thumb {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.5);
+  transition: left 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.bmi-progress-labels {
+  display: flex; justify-content: space-between;
+  margin-top: 6px; font-size: 9px; color: var(--text-sec);
+}
+@keyframes bmiPulse {
+  0%,100% { text-shadow: 0 0 20px currentColor; }
+  50% { text-shadow: 0 0 60px currentColor, 0 0 80px currentColor; }
+}
+.bmi-meter-value.pulse { animation: bmiPulse 1.5s ease-in-out; }
 
 /* sliders */
 .bmi-slider-row { display: flex; flex-direction: column; gap: 8px; }
@@ -1081,19 +1124,27 @@ tbody td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
         </div>
 
         <!-- arc -->
-        <div class="bmi-arc-container">
-          <svg id="bmi-arc-svg" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- track arc -->
-            <path id="bmi-arc-track" stroke="rgba(255,255,255,0.08)" stroke-width="20" stroke-linecap="round" fill="none"/>
-            <!-- value arc -->
-            <path id="bmi-arc-fill" stroke="#00C6FF" stroke-width="20" stroke-linecap="round" fill="none"
-                  style="filter:drop-shadow(0 0 8px currentColor);transition:stroke 0.4s"/>
-          </svg>
-          <div class="bmi-arc-center">
-            <div class="bmi-arc-cat-icon" id="bmi-cat-icon">●</div>
-            <div class="bmi-arc-value" id="bmi-value" style="color:var(--primary)">22.0</div>
-            <div class="bmi-arc-category" id="bmi-cat" style="color:var(--primary)">Норма</div>
+        <div class="bmi-meter">
+          <div class="bmi-meter-bg" id="bmi-meter-bg"></div>
+          <div class="bmi-meter-top">
+            <div>
+              <div class="bmi-meter-label">Индекс массы тела</div>
+              <div style="margin-top:4px">
+                <span class="bmi-meter-value" id="bmi-value">22.0</span>
+                <span class="bmi-meter-unit">BMI</span>
+              </div>
+            </div>
+            <div class="bmi-meter-cat-badge" id="bmi-cat-badge">Норма</div>
           </div>
+          <div class="bmi-progress-wrap">
+            <div class="bmi-progress-track">
+              <div class="bmi-progress-thumb" id="bmi-thumb" style="left:50%"></div>
+            </div>
+            <div class="bmi-progress-labels">
+              <span>Недостаток</span><span>Норма</span><span>Избыток</span><span>Ожирение</span>
+            </div>
+          </div>
+          <div id="bmi-cat" style="font-size:12px;color:var(--text-sec);margin-top:10px;font-style:italic"></div>
         </div>
 
         <!-- sliders -->
@@ -1571,23 +1622,7 @@ let bmiIsFemale = false;
 let currentBMI = 22.0;
 let bmiAnimAngle = 0;
 let bmiAnimTimer = null;
-const ARC_CX = 140, ARC_CY = 140, ARC_R = 106, ARC_START = 200, ARC_SPAN = 270;
-
-function describeArc(cx, cy, r, startDeg, spanDeg) {
-  const toRad = d => (d - 90) * Math.PI / 180;
-  const endDeg = startDeg + spanDeg;
-  const sx = cx + r * Math.cos(toRad(startDeg));
-  const sy = cy + r * Math.sin(toRad(startDeg));
-  const ex = cx + r * Math.cos(toRad(endDeg));
-  const ey = cy + r * Math.sin(toRad(endDeg));
-  const large = spanDeg > 180 ? 1 : 0;
-  return `M ${sx} ${sy} A ${r} ${r} 0 ${large} 1 ${ex} ${ey}`;
-}
-
-function bmiInitArc() {
-  const track = document.getElementById('bmi-arc-track');
-  if (track) track.setAttribute('d', describeArc(ARC_CX, ARC_CY, ARC_R, ARC_START, ARC_SPAN - 0.5));
-}
+function bmiInitArc() { /* no arc needed */ }
 
 function getBmiColor(cat) {
   return {Underweight:'#FFC400', Normal:'#00E5A8', Overweight:'#FF8C00', Obese:'#FF4860'}[cat] || '#00E5A8';
@@ -1621,36 +1656,12 @@ function getBmiRecommendation(cat) {
   return map[cat] || '';
 }
 
-function getArcAngle(bmi) { return Math.min(bmi / 40.0 * ARC_SPAN, ARC_SPAN); }
-
-function animateArcTo(targetBMI) {
-  const targetAngle = getArcAngle(targetBMI);
-  const cat = getBmiCategory(targetBMI, bmiIsFemale);
-  const targetColor = getBmiColor(cat);
-  const startAngle = bmiAnimAngle;
-  const STEPS = 30;
-  let step = 0;
-  const startColorEl = document.getElementById('bmi-arc-fill').getAttribute('stroke') || '#00C6FF';
-
-  if (bmiAnimTimer) clearInterval(bmiAnimTimer);
-  bmiAnimTimer = setInterval(() => {
-    step++;
-    const t = Math.min(step / STEPS, 1);
-    const ease = 1 - Math.pow(1 - t, 3);
-    const angle = startAngle + (targetAngle - startAngle) * ease;
-    bmiAnimAngle = angle;
-
-    const fill = document.getElementById('bmi-arc-fill');
-    if (fill && angle > 0.5) {
-      fill.setAttribute('d', describeArc(ARC_CX, ARC_CY, ARC_R, ARC_START, angle));
-    }
-    fill.setAttribute('stroke', targetColor);
-
-    if (t >= 1) {
-      clearInterval(bmiAnimTimer);
-      bmiAnimAngle = targetAngle;
-    }
-  }, 16);
+function getArcAngle(bmi) { return 0; }
+function animateArcTo(bmi) {
+  // Update progress thumb position (0–40 BMI scale)
+  const pct = Math.min(Math.max(bmi / 40, 0), 1) * 100;
+  const thumb = document.getElementById('bmi-thumb');
+  if (thumb) thumb.style.left = pct + '%';
 }
 
 function recalcBMI() {
@@ -1665,16 +1676,29 @@ function recalcBMI() {
   currentBMI = bmi;
   const cat = getBmiCategory(bmi, bmiIsFemale);
 
-  // Update display
+  // Update meter display
   const color = getBmiColor(cat);
-  document.getElementById('bmi-value').textContent = bmi.toFixed(1);
-  document.getElementById('bmi-value').style.color = color;
-  document.getElementById('bmi-cat').textContent = getBmiCategoryName(cat);
-  document.getElementById('bmi-cat').style.color = color;
-  document.getElementById('bmi-cat-icon').textContent = cat === 'Normal' ? '✓' : '●';
-  document.getElementById('bmi-cat-icon').style.color = color;
+  const valEl = document.getElementById('bmi-value');
+  valEl.textContent = bmi.toFixed(1);
+  valEl.style.color = color;
+  valEl.classList.remove('pulse');
+  void valEl.offsetWidth; // reflow
+  valEl.classList.add('pulse');
 
-  // Animate arc
+  const badge = document.getElementById('bmi-cat-badge');
+  if (badge) {
+    badge.textContent = getBmiCategoryName(cat);
+    badge.style.background = color + '22';
+    badge.style.color = color;
+    badge.style.border = '1px solid ' + color + '55';
+  }
+  const catDesc = document.getElementById('bmi-cat');
+  if (catDesc) catDesc.textContent = getBmiRecommendation(cat).split('.')[0] + '.';
+
+  const bg = document.getElementById('bmi-meter-bg');
+  if (bg) bg.style.background = 'radial-gradient(circle at 30% 50%, ' + color + ', transparent 70%)';
+
+  // Animate thumb
   animateArcTo(bmi);
 
   // Recommendation
@@ -1939,4 +1963,3 @@ renderParts();
 </script>
 </body>
 </html>
-                                      
