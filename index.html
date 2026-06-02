@@ -1681,16 +1681,15 @@ function recalcBMI() {
   const valEl = document.getElementById('bmi-value');
   valEl.textContent = bmi.toFixed(1);
   valEl.style.color = color;
-  valEl.classList.remove('pulse');
-  void valEl.offsetWidth; // reflow
-  valEl.classList.add('pulse');
+  valEl.style.animation = 'none';
+  setTimeout(() => { valEl.style.animation = ''; valEl.classList.add('pulse'); }, 10);
 
   const badge = document.getElementById('bmi-cat-badge');
   if (badge) {
     badge.textContent = getBmiCategoryName(cat);
-    badge.style.background = color + '22';
+    badge.style.background = color + '33';
     badge.style.color = color;
-    badge.style.border = '1px solid ' + color + '55';
+    badge.style.border = '1px solid ' + color + '88';
   }
   const catDesc = document.getElementById('bmi-cat');
   if (catDesc) catDesc.textContent = getBmiRecommendation(cat).split('.')[0] + '.';
@@ -1709,10 +1708,10 @@ function recalcBMI() {
     Overweight:  ['rgba(255,140,0,0.07)','rgba(255,140,0,0.25)','#FF8C00'],
     Obese:       ['rgba(255,72,96,0.07)','rgba(255,72,96,0.25)', '#FF4860'],
   };
-  const [bg,bd,tc] = recColors[cat];
-  rec.style.background = bg;
-  rec.style.borderColor = bd;
-  rec.style.color = tc;
+  const [recBg,recBd,recTc] = recColors[cat];
+  rec.style.background = recBg;
+  rec.style.borderColor = recBd;
+  rec.style.color = recTc;
   rec.textContent = getBmiRecommendation(cat);
 
   // Categories highlight
