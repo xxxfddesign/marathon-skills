@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Marathon Skills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════════════════════════
+   CSS VARIABLES — THEMES
+══════════════════════════════════════════════════ */
+:root {
+  --bg:        #081320;
+  --nav:       #06121A;
+  --card:      #11243B;
+  --input-bg:  #0C1E34;
+  --primary:   #00C6FF;
+  --primary-dk:#0072FF;
+  --accent:    #00E5A8;
+  --text:      #FFFFFF;
+  --text-sec:  #C9D4E5;
+  --border:    #1E3C64;
+  --badge-bg:  rgba(0,114,255,0.18);
+  --badge-bd:  rgba(0,198,255,0.35);
+  --bmi-under: #FFC400;
+  --bmi-normal:#00E5A8;
+  --bmi-over:  #FF8C00;
+  --bmi-obese: #FF4860;
+  --shadow:    rgba(0,198,255,0.18);
+}
+[data-theme="midnight"] {
+  --bg:        #05050A;
+  --nav:       #030308;
+  --card:      #0F0F1C;
+  --input-bg:  #0A0A14;
+  --primary:   #9664FF;
+  --primary-dk:#6432DC;
+  --accent:    #C896FF;
+  --text-sec:  #B4AAD2;
+  --border:    #282341;
+  --badge-bg:  rgba(100,50,220,0.18);
+  --badge-bd:  rgba(150,100,255,0.35);
+  --shadow:    rgba(150,100,255,0.18);
+}
+[data-theme="forest"] {
+  --bg:        #020A05;
+  --nav:       #010602;
+  --card:      #071508;
+  --input-bg:  #08190E;
+  --primary:   #00C864;
+  --primary-dk:#009646;
+  --accent:    #64FF96;
+  --text-sec:  #B4DCBE;
+  --border:    #194628;
+  --badge-bg:  rgba(0,150,70,0.18);
+  --badge-bd:  rgba(0,200,100,0.35);
+  --shadow:    rgba(0,200,100,0.18);
+}
+[data-theme="sunset"] {
+  --bg:        #0A0500;
+  --nav:       #080300;
+  --card:      #1A0C06;
+  --input-bg:  #230F08;
+  --primary:   #FF6B35;
+  --primary-dk:#DC3C14;
+  --accent:    #FFC400;
+  --text-sec:  #F0D2B4;
+  --border:    #502814;
+  --badge-bg:  rgba(220,60,20,0.18);
+  --badge-bd:  rgba(255,107,53,0.35);
+  --shadow:    rgba(255,107,53,0.18);
+}
+
+/* ══════════════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.4s, color 0.4s;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+input, select, textarea { font-family: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ══════════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════════ */
+#app { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+/* ── TOPBAR ── */
+#topbar {
+  background: var(--nav);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 56px;
+  flex-shrink: 0;
+  gap: 8px;
+  position: relative;
+  z-index: 100;
+  transition: background 0.4s, border-color 0.4s;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 24px;
+}
+.logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dk));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 0 14px var(--shadow);
+}
+.logo-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px; font-weight: 700; letter-spacing: 1px;
+  color: var(--text);
+}
+
+/* nav buttons */
+.nav-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 8px;
+  font-size: 13px; font-weight: 600; letter-spacing: 0.3px;
+  color: var(--text-sec);
+  transition: color 0.2s, background 0.2s;
+  position: relative;
+}
+.nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.nav-btn.active { color: var(--primary); }
+.nav-btn.active::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 2px;
+  background: var(--primary);
+  border-radius: 2px 2px 0 0;
+}
+.nav-icon { font-size: 15px; }
+
+/* right side topbar */
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.theme-label {
+  font-size: 11px; color: var(--text-sec);
+  font-weight: 500; letter-spacing: 0.5px;
+}
+
+/* countdown in topbar */
+.countdown-mini {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 4px 12px;
+  font-size: 12px;
+}
+.countdown-mini .cd-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 14px;
+  color: var(--primary);
+  min-width: 20px; text-align: center;
+}
+.countdown-mini .cd-sep { color: var(--text-sec); font-size: 14px; }
+.countdown-mini .cd-label { color: var(--text-sec); font-size: 10px; margin-left: 2px; }
+
+/* theme button */
+.btn-theme {
+  padding: 6px 12px; border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: var(--text-sec);
+  font-size: 13px; font-weight: 500;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-theme:hover { background: rgba(255,255,255,0.09); color: var(--text); border-color: var(--primary); }
+
+/* ── CONTENT ── */
+#content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.page {
+  position: absolute; inset: 0;
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.page.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+/* ══════════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════════ */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dk));
+  color: #fff;
+  border-radius: 10px; padding: 10px 20px;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px var(--shadow);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 24px var(--shadow); }
+.btn-primary:active { transform: translateY(0); }
+.btn-secondary {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  color: var(--text-sec);
+  border-radius: 10px; padding: 10px 20px;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.10); color: var(--text); border-color: var(--primary); }
+.btn-sm { padding: 7px 14px; font-size: 12px; }
+
+/* ══════════════════════════════════════════════════
+   CARDS
+══════════════════════════════════════════════════ */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: background 0.4s, border-color 0.4s;
+}
+
+/* ══════════════════════════════════════════════════
+   FORM ELEMENTS
+══════════════════════════════════════════════════ */
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.8px;
+  color: var(--text-sec); text-transform: uppercase;
+}
+.form-input {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  color: var(--text);
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb, 0,198,255), 0.12);
+}
+.form-input::placeholder { color: rgba(255,255,255,0.25); }
+.form-error {
+  font-size: 11px; color: #FF4860; display: none;
+  animation: shake 0.3s;
+}
+.form-error.show { display: block; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)}
+}
+
+/* ══════════════════════════════════════════════════
+   PAGE: HOME
+══════════════════════════════════════════════════ */
+#page-home {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+.home-left {
+  padding: 28px 32px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.home-right {
+  position: relative;
+  overflow: hidden;
+}
+.home-hero-img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  opacity: 0.7;
+}
+.home-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, var(--bg) 0%, rgba(0,0,0,0.4) 35%, transparent 70%);
+}
+.home-hero-overlay-top {
+  position: absolute; top: 0; left: 0; right: 0; height: 120px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+}
+.home-hero-overlay-bot {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 120px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+/* date badge on hero */
+.hero-date-badge {
+  position: absolute; top: 20px; left: 20px;
+  background: rgba(0,0,0,0.55);
+  border: 1.5px solid;
+  border-image: linear-gradient(90deg, var(--primary-dk), var(--primary)) 1;
+  border-radius: 16px;
+  padding: 14px 20px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  text-align: center;
+}
+.hero-date-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  color: var(--text-sec); text-transform: uppercase;
+  display: flex; align-items: center; gap: 5px; margin-bottom: 4px;
+}
+.hero-date-value {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px; font-weight: 700;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* weather bar */
+.hero-weather {
+  position: absolute; bottom: 16px; left: 16px; right: 16px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; padding: 12px 16px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  backdrop-filter: blur(8px);
+}
+.weather-item { text-align: center; }
+.weather-icon { font-size: 18px; margin-bottom: 2px; color: var(--primary); }
+.weather-label { font-size: 10px; color: var(--text-sec); }
+.weather-value { font-size: 12px; font-weight: 700; color: var(--primary); }
+
+/* home title */
+.home-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 36px; font-weight: 700; letter-spacing: 1px; line-height: 1.1;
+}
+.home-title span { color: var(--primary); }
+.home-subtitle { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
+
+/* stat cards */
+.stat-cards { display: flex; gap: 10px; flex-wrap: nowrap; }
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  flex: 1; min-width: 100px;
+  transition: background 0.4s, border-color 0.4s;
+}
+.stat-icon { font-size: 18px; color: var(--primary); margin-bottom: 6px; }
+.stat-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--text-sec); text-transform: uppercase; }
+.stat-value { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; color: #fff; margin-top: 2px; }
+
+/* info cards */
+.info-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.info-card { padding: 14px 18px; }
+.info-card-label { font-size: 11px; color: var(--text-sec); font-weight: 600; display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+.info-card-value { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: var(--primary); }
+.info-card-unit { font-size: 13px; color: var(--text-sec); font-family: 'Inter', sans-serif; font-weight: 400; }
+
+/* action buttons row */
+.home-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* pace badge */
+.pace-badge {
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-bd);
+  border-radius: 12px; padding: 10px 16px;
+  display: inline-flex; align-items: center; gap: 10px;
+  align-self: flex-start;
+}
+.pace-badge-icon { font-size: 18px; }
+.pace-badge-label { font-size: 10px; color: var(--text-sec); font-weight: 600; letter-spacing: 0.5px; }
+.pace-badge-value { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; color: var(--primary); }
+
+/* marathon quote */
+.marathon-quote {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px; padding: 16px 20px;
+  font-size: 13px; color: var(--text-sec); line-height: 1.7;
+}
+.marathon-quote strong { color: #fff; }
+
+/* ══════════════════════════════════════════════════
+   PAGE: REGISTRATION
+══════════════════════════════════════════════════ */
+#page-reg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+.reg-left { padding: 28px 32px; overflow-y: auto; }
+.reg-right { position: relative; overflow: hidden; background: var(--nav); }
+.reg-right-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
+.reg-right-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--bg) 0%, transparent 60%);
+}
+.reg-hero-content {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  gap: 16px; padding: 32px;
+}
+.reg-right-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 32px; font-weight: 700;
+  text-align: center; letter-spacing: 1px;
+}
+.reg-right-title span { color: var(--primary); }
+.reg-right-desc { font-size: 13px; color: var(--text-sec); text-align: center; line-height: 1.7; max-width: 280px; }
+
+/* pace badge on reg right */
+.reg-pace-badge {
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-bd);
+  border-radius: 12px; padding: 12px 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+/* form layout */
+.reg-form-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 26px; font-weight: 700; letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid { display: flex; flex-direction: column; gap: 14px; }
+
+/* gender toggle */
+.gender-toggle {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex; overflow: hidden;
+}
+.gender-btn {
+  flex: 1; padding: 9px; font-size: 13px; font-weight: 600;
+  color: var(--text-sec);
+  transition: all 0.2s; border-radius: 8px; margin: 3px;
+}
+.gender-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dk));
+  color: #fff;
+}
+
+/* password strength */
+.pwd-strength-bar {
+  height: 4px; background: var(--border); border-radius: 2px;
+  overflow: hidden; margin-top: 4px;
+}
+.pwd-strength-fill {
+  height: 100%; width: 0%; border-radius: 2px;
+  transition: width 0.3s, background 0.3s;
+}
+.pwd-strength-text { font-size: 11px; font-weight: 600; margin-top: 3px; }
+
+/* email indicator */
+.input-wrapper { position: relative; }
+.email-indicator {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff;
+  display: none;
+}
+.email-indicator.show { display: flex; }
+
+/* photo drop zone */
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: 10px; padding: 20px;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s; position: relative; overflow: hidden;
+}
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color: var(--primary);
+  background: rgba(0,198,255,0.05);
+}
+.drop-zone-text { font-size: 12px; color: var(--text-sec); margin-top: 6px; }
+.drop-photo-preview {
+  width: 80px; height: 80px; border-radius: 50%;
+  object-fit: cover; display: none;
+  border: 2px solid var(--primary);
+  margin: 0 auto 8px;
+}
+.drop-photo-preview.show { display: block; }
+.drop-icon { font-size: 28px; }
+
+/* form nav buttons */
+.form-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+/* match icon */
+.pwd-match-icon { font-size: 16px; font-weight: 700; display: none; }
+.pwd-match-icon.show { display: inline; }
+
+/* ══════════════════════════════════════════════════
+   PAGE: BMI
+══════════════════════════════════════════════════ */
+#page-bmi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+.bmi-left { padding: 28px 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+.bmi-right { padding: 28px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+.bmi-page-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 26px; font-weight: 700; letter-spacing: 0.5px;
+}
+
+/* gender toggle BMI */
+.bmi-gender-toggle {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex; overflow: hidden; padding: 4px; gap: 4px;
+}
+.bmi-gender-btn {
+  flex: 1; padding: 8px; font-size: 13px; font-weight: 600;
+  color: var(--text-sec); border-radius: 8px;
+  transition: all 0.2s;
+}
+.bmi-gender-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dk));
+  color: #fff;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* BMI arc canvas */
+.bmi-arc-container {
+  position: relative; width: 280px; height: 280px;
+  margin: 0 auto;
+}
+#bmi-arc-svg {
+  position: absolute; inset: 0;
+}
+.bmi-arc-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.bmi-arc-value {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 52px; font-weight: 700;
+  line-height: 1; transition: color 0.4s;
+}
+.bmi-arc-category {
+  font-size: 14px; font-weight: 600;
+  transition: color 0.4s; margin-top: 4px;
+}
+.bmi-arc-cat-icon { font-size: 18px; }
+
+/* sliders */
+.bmi-slider-row { display: flex; flex-direction: column; gap: 8px; }
+.bmi-slider-header {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.bmi-slider-label { font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: var(--text-sec); text-transform: uppercase; }
+.bmi-slider-val {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px; font-weight: 700; color: var(--primary);
+  display: flex; align-items: baseline; gap: 3px;
+}
+.bmi-slider-unit { font-size: 13px; color: var(--text-sec); font-family: 'Inter', sans-serif; font-weight: 400; }
+input[type=range] {
+  -webkit-appearance: none; width: 100%; height: 6px;
+  background: var(--border); border-radius: 3px; outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dk));
+  box-shadow: 0 0 8px var(--shadow);
+  transition: transform 0.15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+/* categories */
+.bmi-categories { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.bmi-cat {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid transparent;
+  border-radius: 10px; padding: 10px 12px;
+  transition: all 0.3s;
+}
+.bmi-cat.active-under { background: rgba(255,196,0,0.08); border-color: rgba(255,196,0,0.3); }
+.bmi-cat.active-normal { background: rgba(0,229,168,0.08); border-color: rgba(0,229,168,0.3); }
+.bmi-cat.active-over { background: rgba(255,140,0,0.08); border-color: rgba(255,140,0,0.3); }
+.bmi-cat.active-obese { background: rgba(255,72,96,0.08); border-color: rgba(255,72,96,0.3); }
+.bmi-cat-name { font-size: 12px; font-weight: 700; }
+.bmi-cat-range { font-size: 10px; color: var(--text-sec); margin-top: 2px; }
+.bmi-cat-check { font-size: 12px; display: none; }
+.bmi-cat-check.show { display: inline; }
+
+/* scale */
+.bmi-scale-wrap { position: relative; margin-top: 8px; }
+.bmi-scale-track {
+  height: 10px; border-radius: 5px;
+  display: flex; overflow: hidden;
+}
+.bmi-scale-seg { height: 100%; }
+.bmi-scale-labels {
+  display: flex; margin-top: 4px;
+  font-size: 9px; color: var(--text-sec);
+}
+.bmi-scale-lbl { flex: 1; text-align: center; }
+.bmi-scale-arrow {
+  position: absolute; top: -6px;
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid white;
+  transform: translateX(-50%);
+  transition: left 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+}
+
+/* recommendation */
+.bmi-rec {
+  border-radius: 12px; padding: 14px 16px;
+  font-size: 13px; line-height: 1.6;
+  border: 1px solid transparent;
+  transition: all 0.4s;
+}
+
+/* figure */
+.bmi-figure-wrap {
+  position: relative; width: 100%; max-width: 180px;
+  margin: 0 auto; aspect-ratio: 0.5;
+}
+.bmi-figure-img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  position: absolute; inset: 0;
+  transition: opacity 0.4s;
+}
+
+/* ══════════════════════════════════════════════════
+   PAGE: PARTICIPANTS
+══════════════════════════════════════════════════ */
+#page-parts { padding: 24px 28px; overflow-y: auto; height: 100%; }
+.parts-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.parts-title { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; }
+.parts-count {
+  background: var(--badge-bg); border: 1px solid var(--badge-bd);
+  border-radius: 20px; padding: 3px 12px;
+  font-size: 13px; font-weight: 700; color: var(--primary);
+}
+
+/* toolbar */
+.parts-toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
+.search-wrap .form-input { width: 100%; padding-left: 32px; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--text-sec); pointer-events: none; }
+.btn-clear-search {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  font-size: 16px; color: var(--text-sec); cursor: pointer; display: none;
+}
+.btn-clear-search.show { display: block; }
+select.form-input { cursor: pointer; }
+
+/* table */
+.parts-table-wrap { overflow-x: auto; }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+thead th {
+  padding: 12px 14px; text-align: left;
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  color: var(--text-sec); text-transform: uppercase;
+  background: var(--nav); border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.15s;
+}
+tbody tr:hover { background: rgba(255,255,255,0.03); }
+tbody td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
+.td-name { font-weight: 600; }
+.td-email { color: var(--text-sec); font-size: 12px; }
+
+/* role badge */
+.role-badge {
+  display: inline-block;
+  padding: 3px 9px; border-radius: 20px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+}
+.role-runner { background: rgba(0,198,255,0.12); color: var(--primary); border: 1px solid rgba(0,198,255,0.2); }
+.role-coord { background: rgba(0,229,168,0.12); color: #00E5A8; border: 1px solid rgba(0,229,168,0.2); }
+.role-admin { background: rgba(255,196,0,0.12); color: #FFC400; border: 1px solid rgba(255,196,0,0.2); }
+
+/* BMI pill in table */
+.bmi-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-weight: 700; font-size: 12px;
+  padding: 3px 8px; border-radius: 20px;
+}
+.bmi-pill-under { background: rgba(255,196,0,0.1); color: #FFC400; }
+.bmi-pill-normal { background: rgba(0,229,168,0.1); color: #00E5A8; }
+.bmi-pill-over { background: rgba(255,140,0,0.1); color: #FF8C00; }
+.bmi-pill-obese { background: rgba(255,72,96,0.1); color: #FF4860; }
+
+/* avatar placeholder */
+.avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dk));
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.td-person { display: flex; align-items: center; gap: 10px; }
+.td-person-info { display: flex; flex-direction: column; }
+
+/* ══════════════════════════════════════════════════
+   THEME MODAL
+══════════════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--nav);
+  border: 1px solid var(--border);
+  border-radius: 18px; padding: 28px;
+  width: 460px; max-width: 95vw;
+  transform: scale(0.92); transition: transform 0.3s;
+}
+.modal-overlay.show .modal { transform: scale(1); }
+.modal-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px; font-weight: 700;
+  margin-bottom: 20px;
+}
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.theme-option {
+  border: 2px solid var(--border);
+  border-radius: 14px; padding: 16px;
+  cursor: pointer; transition: all 0.2s;
+  position: relative; overflow: hidden;
+}
+.theme-option:hover { border-color: var(--primary); transform: translateY(-2px); }
+.theme-option.selected { border-color: var(--primary); }
+.theme-option.selected::after {
+  content: '✓';
+  position: absolute; top: 8px; right: 10px;
+  font-size: 14px; color: var(--primary); font-weight: 700;
+}
+.theme-preview {
+  height: 50px; border-radius: 8px; margin-bottom: 10px;
+  position: relative; overflow: hidden;
+}
+.theme-preview-bar {
+  height: 100%;
+  display: flex; align-items: center;
+  padding: 0 12px;
+  font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7);
+}
+.theme-name { font-size: 14px; font-weight: 700; }
+.theme-desc { font-size: 11px; color: var(--text-sec); margin-top: 2px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+/* ══════════════════════════════════════════════════
+   MISC
+══════════════════════════════════════════════════ */
+.section-divider {
+  height: 1px; background: var(--border);
+  margin: 4px 0;
+}
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.gap-6 { gap: 6px; }
+.text-primary { color: var(--primary); }
+.text-sec { color: var(--text-sec); }
+.font-raj { font-family: 'Rajdhani', sans-serif; }
+.no-results { text-align: center; padding: 40px; color: var(--text-sec); font-size: 14px; }
+
+/* page fade */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══ TOPBAR ══ -->
+  <nav id="topbar">
+    <div class="logo">
+      <div class="logo-icon">🏃</div>
+      <span class="logo-text">MARATHON SKILLS</span>
+    </div>
+
+    <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
+      <span class="nav-icon">🏠</span> Главная
+    </button>
+    <button class="nav-btn" id="nav-reg" onclick="goTo('reg')">
+      <span class="nav-icon">📝</span> Регистрация
+    </button>
+    <button class="nav-btn" id="nav-bmi" onclick="goTo('bmi')">
+      <span class="nav-icon">⚖️</span> Расчёт BMI
+    </button>
+    <button class="nav-btn" id="nav-parts" onclick="goTo('parts')">
+      <span class="nav-icon">👥</span> Участники
+    </button>
+
+    <div class="topbar-right">
+      <div class="countdown-mini" title="До марафона">
+        <span>🗓</span>
+        <span class="cd-num" id="cd-days">--</span><span class="cd-label">д</span>
+        <span class="cd-sep">:</span>
+        <span class="cd-num" id="cd-hrs">--</span><span class="cd-label">ч</span>
+        <span class="cd-sep">:</span>
+        <span class="cd-num" id="cd-min">--</span><span class="cd-label">м</span>
+        <span class="cd-sep">:</span>
+        <span class="cd-num" id="cd-sec">--</span><span class="cd-label">с</span>
+      </div>
+      <span class="theme-label" id="theme-label">Ocean Blue</span>
+      <button class="btn-theme" onclick="openThemeModal()">🎨 Тема</button>
+    </div>
+  </nav>
+
+  <!-- ══ CONTENT ══ -->
+  <main id="content">
+
+    <!-- ─── PAGE: HOME ─── -->
+    <div class="page active" id="page-home">
+      <div class="home-left">
+        <div>
+          <h1 class="home-title">Марафон<br><span>Skills 2026</span></h1>
+          <p class="home-subtitle" style="margin-top:8px">
+            Официальная система регистрации участников. Проверьте готовность, рассчитайте BMI и отслеживайте статистику.
+          </p>
+        </div>
+
+        <div class="home-actions">
+          <button class="btn-primary" onclick="goTo('reg')">📝 Регистрация</button>
+          <button class="btn-secondary" onclick="goTo('parts')">👥 Участники</button>
+          <button class="btn-secondary" onclick="goTo('bmi')">⚖️ Калькулятор BMI</button>
+        </div>
+
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="stat-icon">👤</div>
+            <div class="stat-label">Участников</div>
+            <div class="stat-value" id="home-stat-participants">12</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🌍</div>
+            <div class="stat-label">Стран</div>
+            <div class="stat-value" id="home-stat-countries">4</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-label">Забегов</div>
+            <div class="stat-value">8</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏙️</div>
+            <div class="stat-label">Городов</div>
+            <div class="stat-value">12</div>
+          </div>
+        </div>
+
+        <div class="info-cards">
+          <div class="card info-card">
+            <div class="info-card-label">📏 Дистанция</div>
+            <div class="info-card-value">42,195 <span class="info-card-unit">км</span></div>
+          </div>
+          <div class="card info-card">
+            <div class="info-card-label">🥇 Рекорд</div>
+            <div class="info-card-value">2:01 <span class="info-card-unit">ч/мин</span></div>
+          </div>
+        </div>
+
+        <div class="pace-badge">
+          <span class="pace-badge-icon">👟</span>
+          <div>
+            <div class="pace-badge-label">Средний результат</div>
+            <div class="pace-badge-value">4:32 мин/км</div>
+          </div>
+        </div>
+
+        <div class="marathon-quote">
+          Примерно на <strong>30–35 километре</strong> многие бегуны сталкиваются с явлением, которое называют «стеной».
+          В этот момент запасы гликогена в мышцах истощаются. Преодоление этого барьера — это уже
+          не вопрос физики, а вопрос чистого упрямства и силы духа.
+        </div>
+      </div>
+
+      <div class="home-right">
+        <div style="background:linear-gradient(135deg,#081320,#0a1a2e);width:100%;height:100%;position:absolute;inset:0;"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:80px;opacity:0.07;pointer-events:none;">🏃</div>
+        <div class="home-hero-overlay"></div>
+
+        <div class="hero-date-badge">
+          <div class="hero-date-label">🗓 Дата марафона</div>
+          <div class="hero-date-value">15 ИЮНЯ 2026</div>
+        </div>
+
+        <div class="hero-weather">
+          <div class="weather-item">
+            <div class="weather-icon">🥇</div>
+            <div class="weather-label">Медали</div>
+            <div class="weather-value">Gold</div>
+          </div>
+          <div class="weather-item">
+            <div class="weather-icon">🌡️</div>
+            <div class="weather-label">Температура</div>
+            <div class="weather-value">+18°C</div>
+          </div>
+          <div class="weather-item">
+            <div class="weather-icon">💨</div>
+            <div class="weather-label">Ветер</div>
+            <div class="weather-value">12 км/ч</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PAGE: REGISTRATION ─── -->
+    <div class="page" id="page-reg">
+      <div class="reg-left">
+        <h2 class="reg-form-title">Регистрация участника</h2>
+        <div class="form-grid" id="reg-form">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Имя</label>
+              <input class="form-input" id="reg-fname" type="text" placeholder="Введите имя" autocomplete="off"/>
+              <span class="form-error" id="err-fname"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Фамилия</label>
+              <input class="form-input" id="reg-lname" type="text" placeholder="Введите фамилию" autocomplete="off"/>
+              <span class="form-error" id="err-lname"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="input-wrapper">
+              <input class="form-input" id="reg-email" type="email" placeholder="example@mail.com" style="width:100%;padding-right:36px" oninput="onEmailInput()" autocomplete="off"/>
+              <div class="email-indicator" id="email-indicator"></div>
+            </div>
+            <span class="form-error" id="err-email"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Телефон</label>
+              <input class="form-input" id="reg-phone" type="text" placeholder="+7 (___) ___-__-__" oninput="onPhoneInput(event)" autocomplete="off"/>
+              <span class="form-error" id="err-phone"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Дата рождения</label>
+              <input class="form-input" id="reg-birth" type="date" value="1990-01-01"/>
+              <span class="form-error" id="err-birth"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Страна</label>
+            <select class="form-input" id="reg-country">
+              <option value="">— Выберите страну —</option>
+              <option>Австралия</option><option>Австрия</option><option>Аргентина</option>
+              <option>Беларусь</option><option>Бельгия</option><option>Бразилия</option>
+              <option>Великобритания</option><option>Германия</option><option>Греция</option>
+              <option>Дания</option><option>Израиль</option><option>Индия</option>
+              <option>Испания</option><option>Италия</option><option selected>Казахстан</option>
+              <option>Канада</option><option>Китай</option><option>Нидерланды</option>
+              <option>Норвегия</option><option>Польша</option><option>Португалия</option>
+              <option>Россия</option><option>США</option><option>Финляндия</option>
+              <option>Франция</option><option>Чехия</option><option>Швейцария</option>
+              <option>Швеция</option><option>Япония</option>
+            </select>
+            <span class="form-error" id="err-country"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Пол</label>
+            <div class="gender-toggle">
+              <button class="gender-btn active" id="gbtn-m" onclick="setRegGender('m')">♂ Мужской</button>
+              <button class="gender-btn" id="gbtn-f" onclick="setRegGender('f')">♀ Женский</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Пароль</label>
+            <input class="form-input" id="reg-pwd" type="password" placeholder="Минимум 6 символов" oninput="onPwdInput()"/>
+            <div class="pwd-strength-bar"><div class="pwd-strength-fill" id="pwd-strength-fill"></div></div>
+            <span class="pwd-strength-text" id="pwd-strength-text"></span>
+            <span class="form-error" id="err-pwd"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Подтверждение пароля <span class="pwd-match-icon" id="pwd-match-icon"></span></label>
+            <input class="form-input" id="reg-pwd2" type="password" placeholder="Повторите пароль" oninput="onPwdInput()"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Фото участника</label>
+            <div class="drop-zone" id="drop-zone"
+                 onclick="triggerPhotoUpload()"
+                 ondragover="onDragOver(event)"
+                 ondragleave="onDragLeave(event)"
+                 ondrop="onDrop(event)">
+              <img class="drop-photo-preview" id="photo-preview" src="" alt=""/>
+              <div id="drop-placeholder">
+                <div class="drop-icon">⬆️</div>
+                <div class="drop-zone-text">Перетащите фото сюда или нажмите для выбора</div>
+              </div>
+              <button class="btn-secondary btn-sm" id="btn-remove-photo" style="display:none;margin-top:8px" onclick="removePhoto(event)">✕ Удалить фото</button>
+            </div>
+            <input type="file" id="file-input" accept="image/*" style="display:none" onchange="onFileInput(event)"/>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-primary" onclick="regSubmit()">Далее →</button>
+            <button class="btn-secondary" onclick="goTo('home')">Отмена</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="reg-right">
+        <div style="background:linear-gradient(135deg,#06121A,#0a1a2e);position:absolute;inset:0;"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:120px;opacity:0.05;pointer-events:none;">🏆</div>
+        <div class="reg-right-overlay"></div>
+        <div class="reg-hero-content">
+          <div class="reg-right-title">Присоединяйтесь к<br><span>марафону</span></div>
+          <div class="reg-right-desc">
+            Зарегистрируйтесь, чтобы принять участие в самом масштабном забеге года. Более 12 участников из 4 стран уже готовы к старту.
+          </div>
+          <div class="reg-pace-badge">
+            <span style="font-size:20px">👟</span>
+            <div>
+              <div class="pace-badge-label">Средний результат</div>
+              <div class="pace-badge-value" style="font-size:20px">4:32 мин/км</div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 20px;text-align:center;">
+            <div style="font-size:10px;color:var(--text-sec);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">🗓 Дата марафона</div>
+            <div class="font-raj" style="font-size:22px;font-weight:700;color:var(--primary)">15 ИЮНЯ 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PAGE: BMI ─── -->
+    <div class="page" id="page-bmi">
+      <div class="bmi-left">
+        <h2 class="bmi-page-title">Калькулятор BMI</h2>
+
+        <div class="form-group">
+          <label class="form-label">Пол</label>
+          <div class="bmi-gender-toggle">
+            <button class="bmi-gender-btn active" id="bmi-gbtn-m" onclick="setBmiGender(false)">♂ Мужской</button>
+            <button class="bmi-gender-btn" id="bmi-gbtn-f" onclick="setBmiGender(true)">♀ Женский</button>
+          </div>
+        </div>
+
+        <!-- arc -->
+        <div class="bmi-arc-container">
+          <svg id="bmi-arc-svg" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- track arc -->
+            <path id="bmi-arc-track" stroke="rgba(255,255,255,0.08)" stroke-width="20" stroke-linecap="round" fill="none"/>
+            <!-- value arc -->
+            <path id="bmi-arc-fill" stroke="#00C6FF" stroke-width="20" stroke-linecap="round" fill="none"
+                  style="filter:drop-shadow(0 0 8px currentColor);transition:stroke 0.4s"/>
+          </svg>
+          <div class="bmi-arc-center">
+            <div class="bmi-arc-cat-icon" id="bmi-cat-icon">●</div>
+            <div class="bmi-arc-value" id="bmi-value" style="color:var(--primary)">22.0</div>
+            <div class="bmi-arc-category" id="bmi-cat" style="color:var(--primary)">Норма</div>
+          </div>
+        </div>
+
+        <!-- sliders -->
+        <div class="bmi-slider-row">
+          <div class="bmi-slider-header">
+            <span class="bmi-slider-label">Рост</span>
+            <div class="bmi-slider-val"><span id="sl-height">170</span><span class="bmi-slider-unit">см</span></div>
+          </div>
+          <input type="range" id="slider-height" min="140" max="220" value="170" oninput="recalcBMI()"/>
+        </div>
+
+        <div class="bmi-slider-row">
+          <div class="bmi-slider-header">
+            <span class="bmi-slider-label">Вес</span>
+            <div class="bmi-slider-val"><span id="sl-weight">70</span><span class="bmi-slider-unit">кг</span></div>
+          </div>
+          <input type="range" id="slider-weight" min="40" max="160" value="70" oninput="recalcBMI()"/>
+        </div>
+
+        <div class="form-actions" style="gap:8px;margin-top:0">
+          <button class="btn-primary" id="bmi-save-btn" onclick="bmySave()">💾 Сохранить и продолжить</button>
+          <button class="btn-secondary" onclick="bmiReset()">↺ Сбросить</button>
+          <button class="btn-secondary" onclick="goTo('home')">← Назад</button>
+        </div>
+      </div>
+
+      <div class="bmi-right">
+        <!-- categories -->
+        <div>
+          <div style="font-size:12px;font-weight:700;letter-spacing:0.5px;color:var(--text-sec);text-transform:uppercase;margin-bottom:10px">Категории BMI</div>
+          <div class="bmi-categories">
+            <div class="bmi-cat" id="cat-under">
+              <div class="bmi-cat-name" style="color:#FFC400">🟡 Недостаток веса <span class="bmi-cat-check" id="cat-under-chk">✓</span></div>
+              <div class="bmi-cat-range" id="cat-under-range">&lt; 18.5</div>
+            </div>
+            <div class="bmi-cat" id="cat-normal">
+              <div class="bmi-cat-name" style="color:#00E5A8">🟢 Норма <span class="bmi-cat-check" id="cat-normal-chk">✓</span></div>
+              <div class="bmi-cat-range" id="cat-normal-range">18.5 — 24.9</div>
+            </div>
+            <div class="bmi-cat" id="cat-over">
+              <div class="bmi-cat-name" style="color:#FF8C00">🟠 Избыточный вес <span class="bmi-cat-check" id="cat-over-chk">✓</span></div>
+              <div class="bmi-cat-range" id="cat-over-range">25 — 29.9</div>
+            </div>
+            <div class="bmi-cat" id="cat-obese">
+              <div class="bmi-cat-name" style="color:#FF4860">🔴 Ожирение <span class="bmi-cat-check" id="cat-obese-chk">✓</span></div>
+              <div class="bmi-cat-range" id="cat-obese-range">≥ 30</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- scale -->
+        <div class="bmi-scale-wrap">
+          <div style="font-size:12px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Шкала BMI</div>
+          <div class="bmi-scale-track" id="bmi-scale-track">
+            <div class="bmi-scale-seg" id="scale-s0" style="flex:18.5;background:#FFC40088"></div>
+            <div class="bmi-scale-seg" id="scale-s1" style="flex:6.5;background:#00E5A888"></div>
+            <div class="bmi-scale-seg" id="scale-s2" style="flex:5;background:#FF8C0088"></div>
+            <div class="bmi-scale-seg" id="scale-s3" style="flex:5;background:#FF486088"></div>
+          </div>
+          <div style="position:relative;height:14px;margin-top:2px">
+            <div class="bmi-scale-arrow" id="scale-arrow" style="left:50%"></div>
+          </div>
+          <div class="bmi-scale-labels">
+            <div class="bmi-scale-lbl" id="lbl-s0">&lt; 18.5</div>
+            <div class="bmi-scale-lbl" id="lbl-s1">18.5–24.9</div>
+            <div class="bmi-scale-lbl" id="lbl-s2">25–29.9</div>
+            <div class="bmi-scale-lbl" id="lbl-s3">≥ 30</div>
+          </div>
+        </div>
+
+        <!-- figure -->
+        <div style="position:relative;width:160px;margin:0 auto;height:220px">
+          <div id="bmi-figure-emoji" style="font-size:120px;line-height:1;text-align:center;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.4s">🏃</div>
+        </div>
+
+        <!-- recommendation -->
+        <div class="bmi-rec" id="bmi-rec" style="background:rgba(0,229,168,0.07);border-color:rgba(0,229,168,0.2);color:#00E5A8">
+          Отличный результат! Ваш вес идеален для участия в марафоне.
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PAGE: PARTICIPANTS ─── -->
+    <div class="page" id="page-parts">
+      <div class="parts-header">
+        <div style="display:flex;align-items:center;gap:12px">
+          <h2 class="parts-title">Участники</h2>
+          <span class="parts-count" id="parts-count">12</span>
+        </div>
+        <button class="btn-secondary" onclick="goTo('home')">← На главную</button>
+      </div>
+
+      <div class="parts-toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="form-input" id="parts-search" type="text" placeholder="Поиск по имени, email, стране…" oninput="filterParts()"/>
+          <span class="btn-clear-search" id="btn-clear-search" onclick="clearSearch()">✕</span>
+        </div>
+        <select class="form-input" id="parts-filter" style="min-width:160px" onchange="filterParts()">
+          <option value="All">Все роли</option>
+          <option value="Runner">Бегун</option>
+          <option value="Coordinator">Координатор</option>
+          <option value="Administrator">Администратор</option>
+          <option value="Underweight">BMI: Недостаток</option>
+          <option value="Normal">BMI: Норма</option>
+          <option value="Overweight">BMI: Избыток</option>
+          <option value="Obese">BMI: Ожирение</option>
+        </select>
+        <select class="form-input" id="parts-sort" style="min-width:160px" onchange="filterParts()">
+          <option value="Id">По ID</option>
+          <option value="FirstNameAsc">Имя А–Я</option>
+          <option value="FirstNameDesc">Имя Я–А</option>
+          <option value="LastNameAsc">Фамилия А–Я</option>
+          <option value="LastNameDesc">Фамилия Я–А</option>
+          <option value="BmiAsc">BMI ↑</option>
+          <option value="BmiDesc">BMI ↓</option>
+          <option value="AgeAsc">Возраст ↑</option>
+          <option value="AgeDesc">Возраст ↓</option>
+        </select>
+      </div>
+
+      <div class="parts-table-wrap">
+        <table id="parts-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Участник</th>
+              <th>Email</th>
+              <th>Телефон</th>
+              <th>Страна</th>
+              <th>Возраст</th>
+              <th>BMI</th>
+              <th>Роль</th>
+            </tr>
+          </thead>
+          <tbody id="parts-tbody"></tbody>
+        </table>
+        <div class="no-results" id="no-results" style="display:none">😔 Участники не найдены</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ THEME MODAL ══ -->
+<div class="modal-overlay" id="theme-modal" onclick="closeThemeModal(event)">
+  <div class="modal">
+    <div class="modal-title">🎨 Выбор темы</div>
+    <div class="theme-grid">
+      <div class="theme-option selected" id="theme-opt-ocean" onclick="selectTheme('ocean')">
+        <div class="theme-preview">
+          <div class="theme-preview-bar" style="background:linear-gradient(90deg,#081320,#11243B)">
+            <span style="color:#00C6FF;font-size:14px">●</span>&nbsp;Ocean Blue
+          </div>
+        </div>
+        <div class="theme-name">🌊 Ocean Blue</div>
+        <div class="theme-desc">Ночной океан, синие тона</div>
+      </div>
+      <div class="theme-option" id="theme-opt-midnight" onclick="selectTheme('midnight')">
+        <div class="theme-preview">
+          <div class="theme-preview-bar" style="background:linear-gradient(90deg,#05050A,#0F0F1C)">
+            <span style="color:#9664FF;font-size:14px">●</span>&nbsp;Midnight Dark
+          </div>
+        </div>
+        <div class="theme-name">🌙 Midnight Dark</div>
+        <div class="theme-desc">Глубокая ночь, фиолетовый</div>
+      </div>
+      <div class="theme-option" id="theme-opt-forest" onclick="selectTheme('forest')">
+        <div class="theme-preview">
+          <div class="theme-preview-bar" style="background:linear-gradient(90deg,#020A05,#071508)">
+            <span style="color:#00C864;font-size:14px">●</span>&nbsp;Forest Green
+          </div>
+        </div>
+        <div class="theme-name">🌿 Forest Green</div>
+        <div class="theme-desc">Лесная свежесть, зелёный</div>
+      </div>
+      <div class="theme-option" id="theme-opt-sunset" onclick="selectTheme('sunset')">
+        <div class="theme-preview">
+          <div class="theme-preview-bar" style="background:linear-gradient(90deg,#0A0500,#1A0C06)">
+            <span style="color:#FF6B35;font-size:14px">●</span>&nbsp;Sunset Run
+          </div>
+        </div>
+        <div class="theme-name">🌅 Sunset Run</div>
+        <div class="theme-desc">Закатный забег, оранжевый</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeThemeModal()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   DATA STORE
+══════════════════════════════════════════════════ */
+const participants = [
+  {id:1,  fn:"Иван",      ln:"Иванов",    email:"ivanov@example.com",    phone:"+7 (999) 123-45-67", country:"Россия",      birth:"1995-05-15", bmi:22.7, male:true,  role:"Runner"},
+  {id:2,  fn:"Мария",     ln:"Петрова",   email:"petrova@example.com",   phone:"+7 (999) 234-56-78", country:"Россия",      birth:"1998-08-22", bmi:21.3, male:false, role:"Runner"},
+  {id:3,  fn:"Алексей",   ln:"Сидоров",   email:"sidorov@example.com",   phone:"+7 (999) 345-67-89", country:"Россия",      birth:"1992-03-10", bmi:25.1, male:true,  role:"Coordinator"},
+  {id:4,  fn:"Екатерина", ln:"Кузнецова", email:"kuznetsova@example.com",phone:"+7 (999) 456-78-90", country:"Россия",      birth:"1996-07-05", bmi:19.8, male:false, role:"Runner"},
+  {id:5,  fn:"Дмитрий",   ln:"Попов",     email:"popov@example.com",     phone:"+7 (999) 567-89-01", country:"Россия",      birth:"1991-11-30", bmi:27.3, male:true,  role:"Administrator"},
+  {id:6,  fn:"Anna",      ln:"Schmidt",   email:"schmidt@example.de",    phone:"+49 151 234-56-78",  country:"Германия",    birth:"1993-04-18", bmi:23.5, male:false, role:"Runner"},
+  {id:7,  fn:"John",      ln:"Smith",     email:"smith@example.com",     phone:"+1 (555) 678-90-12", country:"США",         birth:"1989-09-25", bmi:24.8, male:true,  role:"Runner"},
+  {id:8,  fn:"Sophie",    ln:"Martin",    email:"martin@example.fr",     phone:"+33 6 78 90 12 34",  country:"Франция",     birth:"1997-01-14", bmi:20.2, male:false, role:"Coordinator"},
+  {id:9,  fn:"Сергей",    ln:"Волков",    email:"volkov@example.com",    phone:"+7 (999) 901-23-45", country:"Россия",      birth:"1994-06-03", bmi:26.4, male:true,  role:"Runner"},
+  {id:10, fn:"Ольга",     ln:"Белова",    email:"belova@example.com",    phone:"+7 (999) 012-34-56", country:"Россия",      birth:"2000-12-07", bmi:18.9, male:false, role:"Runner"},
+  {id:11, fn:"James",     ln:"Brown",     email:"brown@example.com",     phone:"+1 (555) 111-22-33", country:"США",         birth:"1988-07-20", bmi:28.1, male:true,  role:"Coordinator"},
+  {id:12, fn:"Lena",      ln:"Müller",    email:"muller@example.de",     phone:"+49 172 345-67-89",  country:"Германия",    birth:"1999-03-29", bmi:22.0, male:false, role:"Runner"},
+];
+let nextId = 13;
+let pendingParticipant = null;
+
+/* ══════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════ */
+let currentPage = 'home';
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+  currentPage = page;
+  if (page === 'parts') renderParts();
+  if (page === 'home') updateHomeStats();
+  if (page === 'bmi') { bmiInitArc(); recalcBMI(); }
+}
+// map reg→reg, bmi→bmi
+document.getElementById('nav-reg').id = 'nav-reg';
+
+/* ══════════════════════════════════════════════════
+   COUNTDOWN
+══════════════════════════════════════════════════ */
+function getMarathonDate() {
+  const now = new Date();
+  let t = new Date(now.getFullYear(), 5, 15, 0, 0, 0); // June 15
+  if (now >= t) t.setFullYear(t.getFullYear() + 1);
+  return t;
+}
+function updateCountdown() {
+  const diff = getMarathonDate() - Date.now();
+  if (diff <= 0) { ['days','hrs','min','sec'].forEach(k => document.getElementById('cd-'+k).textContent='00'); return; }
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  const s = Math.floor((diff%60000)/1000);
+  document.getElementById('cd-days').textContent = d;
+  document.getElementById('cd-hrs').textContent  = String(h).padStart(2,'0');
+  document.getElementById('cd-min').textContent  = String(m).padStart(2,'0');
+  document.getElementById('cd-sec').textContent  = String(s).padStart(2,'0');
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+/* ══════════════════════════════════════════════════
+   THEME
+══════════════════════════════════════════════════ */
+const themeNames = { ocean:'Ocean Blue', midnight:'Midnight Dark', forest:'Forest Green', sunset:'Sunset Run' };
+let currentTheme = 'ocean';
+function selectTheme(t) {
+  currentTheme = t;
+  document.body.setAttribute('data-theme', t === 'ocean' ? '' : t);
+  document.getElementById('theme-label').textContent = themeNames[t];
+  document.querySelectorAll('.theme-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById('theme-opt-' + t).classList.add('selected');
+  // Update slider track gradient dynamically
+  const primary = getComputedStyle(document.body).getPropertyValue('--primary').trim();
+  document.querySelectorAll('input[type=range]').forEach(sl => {
+    const pct = ((sl.value - sl.min) / (sl.max - sl.min)) * 100;
+    sl.style.background = `linear-gradient(to right, ${primary} 0%, ${primary} ${pct}%, var(--border) ${pct}%, var(--border) 100%)`;
+  });
+  if (currentPage === 'bmi') { bmiInitArc(); recalcBMI(); }
+}
+function openThemeModal() { document.getElementById('theme-modal').classList.add('show'); }
+function closeThemeModal(e) {
+  if (!e || e.target === document.getElementById('theme-modal')) document.getElementById('theme-modal').classList.remove('show');
+}
+
+/* ══════════════════════════════════════════════════
+   HOME STATS
+══════════════════════════════════════════════════ */
+function updateHomeStats() {
+  document.getElementById('home-stat-participants').textContent = participants.length;
+  const countries = new Set(participants.map(p => p.country));
+  document.getElementById('home-stat-countries').textContent = countries.size;
+}
+updateHomeStats();
+
+/* ══════════════════════════════════════════════════
+   REGISTRATION
+══════════════════════════════════════════════════ */
+let regGender = 'm';
+let photoFile = null;
+
+function setRegGender(g) {
+  regGender = g;
+  document.getElementById('gbtn-m').classList.toggle('active', g === 'm');
+  document.getElementById('gbtn-f').classList.toggle('active', g === 'f');
+}
+
+// Phone formatting
+let phoneChanging = false;
+function onPhoneInput(e) {
+  if (phoneChanging) return;
+  phoneChanging = true;
+  const inp = document.getElementById('reg-phone');
+  let digits = inp.value.replace(/\D/g, '');
+  if ((digits.startsWith('7') || digits.startsWith('8')) && digits.length > 1) digits = digits.slice(1);
+  if (digits.length > 10) digits = digits.slice(0, 10);
+  let formatted = '+7 (';
+  if (digits.length >= 3) {
+    formatted += digits.slice(0, 3) + ') ';
+    let rest = digits.slice(3);
+    if (rest.length >= 3) {
+      formatted += rest.slice(0, 3) + '-';
+      rest = rest.slice(3);
+      if (rest.length >= 2) { formatted += rest.slice(0, 2) + '-' + rest.slice(2); }
+      else formatted += rest;
+    } else formatted += rest;
+  } else formatted += digits;
+  inp.value = formatted;
+  phoneChanging = false;
+}
+
+// Email indicator
+function onEmailInput() {
+  const val = document.getElementById('reg-email').value;
+  const ind = document.getElementById('email-indicator');
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  if (val) {
+    ind.classList.add('show');
+    ind.style.background = valid ? '#00B96E' : '#C81E3C';
+    ind.textContent = valid ? '✓' : '✗';
+  } else { ind.classList.remove('show'); }
+}
+
+// Password strength
+function onPwdInput() {
+  const pwd = document.getElementById('reg-pwd').value;
+  const fill = document.getElementById('pwd-strength-fill');
+  const txt  = document.getElementById('pwd-strength-text');
+  const match = document.getElementById('pwd-match-icon');
+  const conf = document.getElementById('reg-pwd2').value;
+
+  if (!pwd) { fill.style.width='0'; txt.textContent=''; }
+  else {
+    let score = 0;
+    if (pwd.length >= 6) score++;
+    if (pwd.length >= 10) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[^a-zA-Z0-9]/.test(pwd)) score++;
+    const map = [
+      [20,'Слабый','#FF4860'],[20,'Слабый','#FF4860'],
+      [40,'Слабый','#FF8C00'],[60,'Средний','#FFC400'],
+      [80,'Хороший','#00B96E'],[100,'Отличный','#00E5A8']
+    ];
+    const [w,l,c] = map[score] || map[0];
+    fill.style.width = w + '%';
+    fill.style.background = c;
+    txt.textContent = l;
+    txt.style.color = c;
+  }
+
+  if (conf) {
+    match.classList.add('show');
+    match.textContent = (pwd === conf) ? '✓' : '✗';
+    match.style.color  = (pwd === conf) ? '#00B96E' : '#FF4860';
+  } else { match.classList.remove('show'); }
+}
+
+// Drop zone
+function triggerPhotoUpload() { document.getElementById('file-input').click(); }
+function onDragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-over'); }
+function onDragLeave(e) { document.getElementById('drop-zone').classList.remove('drag-over'); }
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) loadPhoto(file);
+}
+function onFileInput(e) { const f = e.target.files[0]; if (f) loadPhoto(f); }
+function loadPhoto(file) {
+  photoFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const prev = document.getElementById('photo-preview');
+    prev.src = ev.target.result;
+    prev.classList.add('show');
+    document.getElementById('drop-placeholder').style.display = 'none';
+    document.getElementById('btn-remove-photo').style.display = 'inline-block';
+  };
+  reader.readAsDataURL(file);
+}
+function removePhoto(e) {
+  e.stopPropagation();
+  photoFile = null;
+  const prev = document.getElementById('photo-preview');
+  prev.src = ''; prev.classList.remove('show');
+  document.getElementById('drop-placeholder').style.display = '';
+  document.getElementById('btn-remove-photo').style.display = 'none';
+  document.getElementById('file-input').value = '';
+}
+
+// Validation
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+}
+function hideErr(id) { document.getElementById(id).classList.remove('show'); }
+
+function regSubmit() {
+  // clear errors
+  ['err-fname','err-lname','err-email','err-pwd','err-phone','err-birth','err-country'].forEach(hideErr);
+  let ok = true;
+
+  const fn = document.getElementById('reg-fname').value.trim();
+  const ln = document.getElementById('reg-lname').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pwd = document.getElementById('reg-pwd').value;
+  const pwd2 = document.getElementById('reg-pwd2').value;
+  const phone = document.getElementById('reg-phone').value.replace(/\D/g,'');
+  const birth = document.getElementById('reg-birth').value;
+  const country = document.getElementById('reg-country').value;
+
+  if (!fn) { showErr('err-fname','⚠ Введите имя'); ok=false; }
+  else if (/\d/.test(fn)) { showErr('err-fname','⚠ Имя не должно содержать цифры'); ok=false; }
+
+  if (!ln) { showErr('err-lname','⚠ Введите фамилию'); ok=false; }
+  else if (/\d/.test(ln)) { showErr('err-lname','⚠ Фамилия не должна содержать цифры'); ok=false; }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('err-email','⚠ Введите корректный email'); ok=false; }
+
+  if (!pwd) { showErr('err-pwd','⚠ Введите пароль'); ok=false; }
+  else if (pwd.length < 6) { showErr('err-pwd','⚠ Минимум 6 символов'); ok=false; }
+  else if (!/\d/.test(pwd)) { showErr('err-pwd','⚠ Пароль должен содержать хотя бы одну цифру'); ok=false; }
+  else if (pwd !== pwd2) { showErr('err-pwd','⚠ Пароли не совпадают'); ok=false; }
+
+  if (phone.length < 11) { showErr('err-phone','⚠ Введите полный номер телефона'); ok=false; }
+
+  if (birth) {
+    const age = calcAge(birth);
+    if (age < 16) { showErr('err-birth','⚠ Возраст должен быть не менее 16 лет'); ok=false; }
+  } else { showErr('err-birth','⚠ Укажите дату рождения'); ok=false; }
+
+  if (!country) { showErr('err-country','⚠ Выберите страну'); ok=false; }
+
+  if (!ok) return;
+
+  pendingParticipant = {
+    fn, ln, email,
+    phone: document.getElementById('reg-phone').value,
+    birth, country,
+    male: regGender === 'm',
+    bmi: 0, bmiCat: '',
+    role: 'Runner'
+  };
+
+  goTo('bmi');
+}
+
+function calcAge(dateStr) {
+  const b = new Date(dateStr);
+  const now = new Date();
+  let age = now.getFullYear() - b.getFullYear();
+  if (new Date(now.getFullYear(), b.getMonth(), b.getDate()) > now) age--;
+  return age;
+}
+
+/* ══════════════════════════════════════════════════
+   BMI
+══════════════════════════════════════════════════ */
+let bmiIsFemale = false;
+let currentBMI = 22.0;
+let bmiAnimAngle = 0;
+let bmiAnimTimer = null;
+const ARC_CX = 140, ARC_CY = 140, ARC_R = 106, ARC_START = 200, ARC_SPAN = 270;
+
+function describeArc(cx, cy, r, startDeg, endDeg) {
+  const toRad = d => (d - 90) * Math.PI / 180;
+  const sx = cx + r * Math.cos(toRad(startDeg));
+  const sy = cy + r * Math.sin(toRad(startDeg));
+  const ex = cx + r * Math.cos(toRad(endDeg));
+  const ey = cy + r * Math.sin(toRad(endDeg));
+  const large = (endDeg - startDeg) > 180 ? 1 : 0;
+  return `M ${sx} ${sy} A ${r} ${r} 0 ${large} 1 ${ex} ${ey}`;
+}
+
+function bmiInitArc() {
+  const track = document.getElementById('bmi-arc-track');
+  if (track) track.setAttribute('d', describeArc(ARC_CX, ARC_CY, ARC_R, ARC_START, ARC_START + ARC_SPAN - 0.5));
+}
+
+function getBmiColor(cat) {
+  return {Underweight:'#FFC400', Normal:'#00E5A8', Overweight:'#FF8C00', Obese:'#FF4860'}[cat] || '#00E5A8';
+}
+
+function getBmiCategory(bmi, female) {
+  if (female) {
+    if (bmi < 17.5) return 'Underweight';
+    if (bmi < 24.0) return 'Normal';
+    if (bmi < 29.0) return 'Overweight';
+    return 'Obese';
+  } else {
+    if (bmi < 18.5) return 'Underweight';
+    if (bmi < 25.0) return 'Normal';
+    if (bmi < 30.0) return 'Overweight';
+    return 'Obese';
+  }
+}
+
+function getBmiCategoryName(cat) {
+  return {Underweight:'Недостаток веса', Normal:'Норма', Overweight:'Избыточный вес', Obese:'Ожирение'}[cat];
+}
+
+function getBmiRecommendation(cat) {
+  const map = {
+    Underweight: 'Рекомендуется увеличить калорийность питания и проконсультироваться с врачом перед марафоном.',
+    Normal:      'Отличный результат! Ваш вес идеален для участия в марафоне.',
+    Overweight:  'Рекомендуется снизить вес для улучшения беговых показателей.',
+    Obese:       'Необходима консультация врача перед участием в марафоне.',
+  };
+  return map[cat] || '';
+}
+
+function getArcAngle(bmi) { return Math.min(bmi / 40.0 * ARC_SPAN, ARC_SPAN); }
+
+function animateArcTo(targetBMI) {
+  const targetAngle = getArcAngle(targetBMI);
+  const cat = getBmiCategory(targetBMI, bmiIsFemale);
+  const targetColor = getBmiColor(cat);
+  const startAngle = bmiAnimAngle;
+  const STEPS = 30;
+  let step = 0;
+  const startColorEl = document.getElementById('bmi-arc-fill').getAttribute('stroke') || '#00C6FF';
+
+  if (bmiAnimTimer) clearInterval(bmiAnimTimer);
+  bmiAnimTimer = setInterval(() => {
+    step++;
+    const t = Math.min(step / STEPS, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    const angle = startAngle + (targetAngle - startAngle) * ease;
+    bmiAnimAngle = angle;
+
+    const fill = document.getElementById('bmi-arc-fill');
+    if (fill && angle > 0.5) {
+      fill.setAttribute('d', describeArc(ARC_CX, ARC_CY, ARC_R, ARC_START, ARC_START + angle));
+    }
+    fill.setAttribute('stroke', targetColor);
+
+    if (t >= 1) {
+      clearInterval(bmiAnimTimer);
+      bmiAnimAngle = targetAngle;
+    }
+  }, 16);
+}
+
+function recalcBMI() {
+  const h = parseInt(document.getElementById('slider-height').value);
+  const w = parseInt(document.getElementById('slider-weight').value);
+  document.getElementById('sl-height').textContent = h;
+  document.getElementById('sl-weight').textContent = w;
+  updateSliderTrack('slider-height');
+  updateSliderTrack('slider-weight');
+
+  const bmi = h > 0 && w > 0 ? Math.round(w / Math.pow(h / 100, 2) * 10) / 10 : 0;
+  currentBMI = bmi;
+  const cat = getBmiCategory(bmi, bmiIsFemale);
+
+  // Update display
+  const color = getBmiColor(cat);
+  document.getElementById('bmi-value').textContent = bmi.toFixed(1);
+  document.getElementById('bmi-value').style.color = color;
+  document.getElementById('bmi-cat').textContent = getBmiCategoryName(cat);
+  document.getElementById('bmi-cat').style.color = color;
+  document.getElementById('bmi-cat-icon').textContent = cat === 'Normal' ? '✓' : '●';
+  document.getElementById('bmi-cat-icon').style.color = color;
+
+  // Animate arc
+  animateArcTo(bmi);
+
+  // Recommendation
+  const rec = document.getElementById('bmi-rec');
+  const recColors = {
+    Underweight: ['rgba(255,196,0,0.07)','rgba(255,196,0,0.25)','#FFC400'],
+    Normal:      ['rgba(0,229,168,0.07)','rgba(0,229,168,0.25)','#00E5A8'],
+    Overweight:  ['rgba(255,140,0,0.07)','rgba(255,140,0,0.25)','#FF8C00'],
+    Obese:       ['rgba(255,72,96,0.07)','rgba(255,72,96,0.25)', '#FF4860'],
+  };
+  const [bg,bd,tc] = recColors[cat];
+  rec.style.background = bg;
+  rec.style.borderColor = bd;
+  rec.style.color = tc;
+  rec.textContent = getBmiRecommendation(cat);
+
+  // Categories highlight
+  ['under','normal','over','obese'].forEach(k => {
+    document.getElementById('cat-'+k).className = 'bmi-cat';
+    document.getElementById('cat-'+k+'-chk').classList.remove('show');
+  });
+  const catMap = {Underweight:'under', Normal:'normal', Overweight:'over', Obese:'obese'};
+  const key = catMap[cat];
+  document.getElementById('cat-'+key).classList.add('active-'+key);
+  document.getElementById('cat-'+key+'-chk').classList.add('show');
+
+  // Figure emoji
+  const figMap = {
+    Underweight: bmiIsFemale ? '🏃‍♀️' : '🦴',
+    Normal:      bmiIsFemale ? '🏃‍♀️' : '🏃',
+    Overweight:  bmiIsFemale ? '🚶‍♀️' : '🚶',
+    Obese:       bmiIsFemale ? '🧍‍♀️' : '🧍',
+  };
+  document.getElementById('bmi-figure-emoji').textContent = figMap[cat];
+
+  // Scale arrow
+  updateScaleArrow(bmi);
+}
+
+function updateSliderTrack(id) {
+  const sl = document.getElementById(id);
+  const pct = ((sl.value - sl.min) / (sl.max - sl.min)) * 100;
+  const primary = getComputedStyle(document.body).getPropertyValue('--primary').trim();
+  sl.style.background = `linear-gradient(to right, ${primary} 0%, ${primary} ${pct}%, var(--border) ${pct}%, var(--border) 100%)`;
+}
+
+function updateScaleArrow(bmi) {
+  const arrow = document.getElementById('scale-arrow');
+  if (!arrow) return;
+  const scaleEl = document.getElementById('bmi-scale-track');
+  const W = scaleEl.offsetWidth || 300;
+
+  let borders, stars;
+  if (bmiIsFemale) {
+    borders = [0, 17.5, 24.0, 29.0];
+    stars   = [17.5, 6.5, 5.0, 6.0];
+  } else {
+    borders = [0, 18.5, 25.0, 30.0];
+    stars   = [18.5, 6.5, 5.0, 5.0];
+  }
+  const total = stars.reduce((a,b)=>a+b,0);
+  const segW = stars.map(s => s/total * W);
+
+  let x = 0;
+  for (let i = 0; i < borders.length; i++) {
+    const isLast = i === borders.length - 1;
+    const segEnd = isLast ? Infinity : borders[i+1];
+    if (bmi <= segEnd || isLast) {
+      let xStart = segW.slice(0,i).reduce((a,b)=>a+b,0);
+      const range = isLast ? stars[i] : (segEnd - borders[i]);
+      const prog = Math.min(Math.max(bmi - borders[i], 0) / range, 1);
+      x = Math.min(xStart + prog * segW[i], W);
+      break;
+    }
+  }
+  arrow.style.left = x + 'px';
+}
+
+function setBmiGender(female) {
+  bmiIsFemale = female;
+  document.getElementById('bmi-gbtn-m').classList.toggle('active', !female);
+  document.getElementById('bmi-gbtn-f').classList.toggle('active', female);
+
+  if (female) {
+    document.getElementById('cat-under-range').textContent = '< 17.5';
+    document.getElementById('cat-normal-range').textContent = '17.5 — 23.9';
+    document.getElementById('cat-over-range').textContent = '24 — 28.9';
+    document.getElementById('cat-obese-range').textContent = '≥ 29';
+    document.getElementById('lbl-s0').textContent = '< 17.5';
+    document.getElementById('lbl-s1').textContent = '17.5–23.9';
+    document.getElementById('lbl-s2').textContent = '24–28.9';
+    document.getElementById('lbl-s3').textContent = '≥ 29';
+    document.getElementById('scale-s0').style.flex = '17.5';
+    document.getElementById('scale-s1').style.flex = '6.5';
+    document.getElementById('scale-s2').style.flex = '5';
+    document.getElementById('scale-s3').style.flex = '6';
+  } else {
+    document.getElementById('cat-under-range').textContent = '< 18.5';
+    document.getElementById('cat-normal-range').textContent = '18.5 — 24.9';
+    document.getElementById('cat-over-range').textContent = '25 — 29.9';
+    document.getElementById('cat-obese-range').textContent = '≥ 30';
+    document.getElementById('lbl-s0').textContent = '< 18.5';
+    document.getElementById('lbl-s1').textContent = '18.5–24.9';
+    document.getElementById('lbl-s2').textContent = '25–29.9';
+    document.getElementById('lbl-s3').textContent = '≥ 30';
+    document.getElementById('scale-s0').style.flex = '18.5';
+    document.getElementById('scale-s1').style.flex = '6.5';
+    document.getElementById('scale-s2').style.flex = '5';
+    document.getElementById('scale-s3').style.flex = '5';
+  }
+  recalcBMI();
+}
+
+function bmiReset() {
+  document.getElementById('slider-height').value = 170;
+  document.getElementById('slider-weight').value = 70;
+  recalcBMI();
+}
+
+function bmySave() {
+  const cat = getBmiCategory(currentBMI, bmiIsFemale);
+  if (pendingParticipant) {
+    pendingParticipant.bmi = currentBMI;
+    pendingParticipant.bmiCat = getBmiCategoryName(cat);
+    const id = nextId++;
+    participants.push({ ...pendingParticipant, id });
+    pendingParticipant = null;
+    updateHomeStats();
+    document.getElementById('bmi-save-btn').textContent = '✓ Сохранено!';
+    setTimeout(() => { document.getElementById('bmi-save-btn').textContent = '💾 Сохранить и продолжить'; }, 2000);
+  }
+  goTo('parts');
+}
+
+// Init BMI arc on first page load if on bmi page
+bmiInitArc();
+recalcBMI();
+
+/* ══════════════════════════════════════════════════
+   PARTICIPANTS TABLE
+══════════════════════════════════════════════════ */
+function calcAgeFromBirth(birth) {
+  const b = new Date(birth);
+  const now = new Date();
+  let age = now.getFullYear() - b.getFullYear();
+  if (new Date(now.getFullYear(), b.getMonth(), b.getDate()) > now) age--;
+  return age;
+}
+
+function getBmiPillClass(bmi) {
+  if (bmi < 18.5) return 'bmi-pill bmi-pill-under';
+  if (bmi < 25)   return 'bmi-pill bmi-pill-normal';
+  if (bmi < 30)   return 'bmi-pill bmi-pill-over';
+  return 'bmi-pill bmi-pill-obese';
+}
+
+function getRoleHtml(role) {
+  const map = {
+    Runner:        '<span class="role-badge role-runner">Бегун</span>',
+    Coordinator:   '<span class="role-badge role-coord">Координатор</span>',
+    Administrator: '<span class="role-badge role-admin">Администратор</span>',
+  };
+  return map[role] || '<span class="role-badge role-runner">Бегун</span>';
+}
+
+function renderParts() {
+  const q = (document.getElementById('parts-search').value || '').trim().toLowerCase();
+  const filter = document.getElementById('parts-filter').value;
+  const sort = document.getElementById('parts-sort').value;
+
+  let data = [...participants];
+
+  // search
+  if (q) data = data.filter(p =>
+    p.fn.toLowerCase().includes(q) || p.ln.toLowerCase().includes(q) ||
+    p.email.toLowerCase().includes(q) || p.country.toLowerCase().includes(q) ||
+    p.phone.includes(q)
+  );
+
+  // filter
+  const filterMap = {
+    Runner:        p => p.role === 'Runner',
+    Coordinator:   p => p.role === 'Coordinator',
+    Administrator: p => p.role === 'Administrator',
+    Underweight:   p => p.bmi > 0 && p.bmi < 18.5,
+    Normal:        p => p.bmi >= 18.5 && p.bmi < 25,
+    Overweight:    p => p.bmi >= 25 && p.bmi < 30,
+    Obese:         p => p.bmi >= 30,
+  };
+  if (filterMap[filter]) data = data.filter(filterMap[filter]);
+
+  // sort
+  const sortMap = {
+    Id:            (a,b) => a.id - b.id,
+    FirstNameAsc:  (a,b) => a.fn.localeCompare(b.fn),
+    FirstNameDesc: (a,b) => b.fn.localeCompare(a.fn),
+    LastNameAsc:   (a,b) => a.ln.localeCompare(b.ln),
+    LastNameDesc:  (a,b) => b.ln.localeCompare(a.ln),
+    BmiAsc:        (a,b) => a.bmi - b.bmi,
+    BmiDesc:       (a,b) => b.bmi - a.bmi,
+    AgeAsc:        (a,b) => calcAgeFromBirth(a.birth) - calcAgeFromBirth(b.birth),
+    AgeDesc:       (a,b) => calcAgeFromBirth(b.birth) - calcAgeFromBirth(a.birth),
+  };
+  if (sortMap[sort]) data.sort(sortMap[sort]);
+
+  document.getElementById('parts-count').textContent = data.length;
+
+  const tbody = document.getElementById('parts-tbody');
+  const noRes = document.getElementById('no-results');
+
+  if (data.length === 0) {
+    tbody.innerHTML = '';
+    noRes.style.display = '';
+    return;
+  }
+  noRes.style.display = 'none';
+
+  tbody.innerHTML = data.map(p => {
+    const initials = (p.fn[0]||'') + (p.ln[0]||'');
+    const age = calcAgeFromBirth(p.birth);
+    return `<tr>
+      <td style="color:var(--text-sec);font-size:12px">${p.id}</td>
+      <td>
+        <div class="td-person">
+          <div class="avatar">${initials}</div>
+          <div class="td-person-info">
+            <span class="td-name">${p.fn} ${p.ln}</span>
+            <span class="td-email">${p.country}</span>
+          </div>
+        </div>
+      </td>
+      <td class="td-email">${p.email}</td>
+      <td style="font-size:12px;color:var(--text-sec)">${p.phone}</td>
+      <td style="font-size:13px">${p.country}</td>
+      <td style="font-size:13px">${age} лет</td>
+      <td><span class="${getBmiPillClass(p.bmi)}">${p.bmi > 0 ? p.bmi.toFixed(1) : '—'}</span></td>
+      <td>${getRoleHtml(p.role)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterParts() {
+  const clr = document.getElementById('btn-clear-search');
+  const q = document.getElementById('parts-search').value;
+  clr.classList.toggle('show', q.length > 0);
+  renderParts();
+}
+
+function clearSearch() {
+  document.getElementById('parts-search').value = '';
+  document.getElementById('btn-clear-search').classList.remove('show');
+  renderParts();
+}
+
+// Init
+renderParts();
+</script>
+</body>
+</html>
