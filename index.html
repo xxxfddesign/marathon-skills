@@ -147,7 +147,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   background: var(--primary);
   border-radius: 2px 2px 0 0;
 }
-.nav-icon { font-size: 15px; }
+.nav-icon { 
+  font-family: "Segoe MDL2 Assets", "Segoe UI Symbol", sans-serif;
+  font-size: 15px; 
+}
+.mdl2 {
+  font-family: "Segoe MDL2 Assets", "Segoe UI Symbol", sans-serif;
+  font-size: 14px; line-height: 1;
+}
 
 /* right side topbar */
 .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
@@ -594,13 +601,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
     #FF4860 75%, #FF4860 100%);
   position: relative;
 }
-.bmi-progress-thumb {
-  position: absolute; top: 50%; transform: translate(-50%, -50%);
-  width: 16px; height: 16px; border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.5);
-  transition: left 0.5s cubic-bezier(0.34,1.56,0.64,1);
-}
+
 .bmi-progress-labels {
   display: flex; justify-content: space-between;
   margin-top: 6px; font-size: 9px; color: var(--text-sec);
@@ -910,16 +911,16 @@ tbody td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
     </div>
 
     <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
-      <span class="nav-icon">🏠</span> Главная
+      <span class="mdl2">&#xE80F;</span> Главная
     </button>
     <button class="nav-btn" id="nav-reg" onclick="goTo('reg')">
-      <span class="nav-icon">📝</span> Регистрация
+      <span class="mdl2">&#xE70F;</span> Регистрация
     </button>
     <button class="nav-btn" id="nav-bmi" onclick="goTo('bmi')">
-      <span class="nav-icon">⚖️</span> Расчёт BMI
+      <span class="mdl2">&#xE9F3;</span> Расчёт BMI
     </button>
     <button class="nav-btn" id="nav-parts" onclick="goTo('parts')">
-      <span class="nav-icon">👥</span> Участники
+      <span class="mdl2">&#xE716;</span> Участники
     </button>
 
     <div class="topbar-right">
@@ -934,8 +935,8 @@ tbody td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
         <span class="cd-num" id="cd-sec">--</span><span class="cd-label">с</span>
       </div>
       <span class="theme-label" id="theme-label">Ocean Blue</span>
-      <button class="btn-theme" onclick="openThemeModal()">🎨 Тема</button>
-      <button class="btn-login" onclick="goTo('admin-login')">🔐 LOGIN</button>
+      <button class="btn-theme" onclick="openThemeModal()"><span class="mdl2">&#xE790;</span> Тема</button>
+      <button class="btn-login" onclick="goTo('admin-login')"><span class="mdl2">&#xE72E;</span> LOGIN</button>
     </div>
   </nav>
 
@@ -1191,7 +1192,7 @@ tbody td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
           </div>
           <div class="bmi-progress-wrap">
             <div class="bmi-progress-track">
-              <div class="bmi-progress-thumb" id="bmi-thumb" style="left:50%"></div>
+              
             </div>
             <div class="bmi-progress-labels">
               <span>Недостаток</span><span>Норма</span><span>Избыток</span><span>Ожирение</span>
@@ -1344,21 +1345,21 @@ tbody td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
     <!-- PAGE: ADMIN LOGIN -->
     <div class="page" id="page-admin-login">
       <div class="admin-login-card">
-        <div class="admin-login-title">🔐 Форма авторизации</div>
+        <div class="admin-login-title">Авторизация</div>
         <div class="admin-login-sub">Пожалуйста, авторизуйтесь в системе,<br>используя ваш логин и пароль.</div>
         <div class="admin-error-box" id="admin-login-error">⚠ Неверный логин или пароль</div>
         <div class="admin-login-row">
-          <label class="admin-login-label">Login:</label>
-          <input class="form-input" id="admin-login-input" type="text" placeholder="Enter your login" autocomplete="off"/>
+          <label class="admin-login-label">Логин:</label>
+          <input class="form-input" id="admin-login-input" type="text" placeholder="Введите ваш логин" autocomplete="off"/>
         </div>
         <div class="admin-login-row">
-          <label class="admin-login-label">Password:</label>
-          <input class="form-input" id="admin-pwd-input" type="password" placeholder="Enter your password"
+          <label class="admin-login-label">Пароль:</label>
+          <input class="form-input" id="admin-pwd-input" type="password" placeholder="Введите ваш пароль"
                  onkeydown="if(event.key==='Enter')adminDoLogin()"/>
         </div>
         <div class="admin-actions-row">
-          <button class="btn-primary" onclick="adminDoLogin()">Login</button>
-          <button class="btn-secondary" onclick="goTo('home')">Cancel</button>
+          <button class="btn-primary" onclick="adminDoLogin()">Войти</button>
+          <button class="btn-secondary" onclick="goTo('home')">Отмена</button>
         </div>
       </div>
     </div>
@@ -1848,8 +1849,7 @@ function getArcAngle(bmi) { return 0; }
 function animateArcTo(bmi) {
   // Update progress thumb position (0–40 BMI scale)
   const pct = Math.min(Math.max(bmi / 40, 0), 1) * 100;
-  const thumb = document.getElementById('bmi-thumb');
-  if (thumb) thumb.style.left = pct + '%';
+  /* thumb removed */
 }
 
 function recalcBMI() {
